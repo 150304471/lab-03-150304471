@@ -14,13 +14,14 @@ import androidx.fragment.app.DialogFragment;
 
 public class AddCityFragment extends DialogFragment {
     interface AddCityDialogListener {
-        void addCity(City city);
+        void addCity(City city, Integer position);
     }
 
-    public static AddCityFragment newInstance(City city) {
+    public static AddCityFragment newInstance(City city, Integer position) {
         AddCityFragment fragment = new AddCityFragment();
         Bundle args = new Bundle();
         args.putSerializable("city", city);
+        args.putInt("position", position);
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,9 +45,12 @@ public class AddCityFragment extends DialogFragment {
         EditText editProvinceName = view.findViewById(R.id.edit_text_province_text);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
+        final Integer[] position = {null};
+
         Bundle args = getArguments();
         if (args != null) {
             City city = (City) args.getSerializable("city");
+            position[0] = args.getInt("position");
             editCityName.setText(city.getName());
             editProvinceName.setText(city.getProvince());
         }
@@ -57,7 +61,7 @@ public class AddCityFragment extends DialogFragment {
                 .setPositiveButton("Add", (dialog, which) -> {
                     String cityName = editCityName.getText().toString();
                     String provinceName = editProvinceName.getText().toString();
-                    listener.addCity(new City(cityName, provinceName));
+                    listener.addCity(new City(cityName, provinceName), position[0]);
                 })
                 .create();
     }

@@ -20,8 +20,12 @@ public class MainActivity extends AppCompatActivity implements
     private ListView cityList;
     private CityArrayAdapter cityAdapter;
     @Override
-    public void addCity(City city) {
-        cityAdapter.add(city);
+    public void addCity(City city, Integer position) {
+        if (position == null) {
+            cityAdapter.add(city);
+        } else {
+            dataList.set(position, city);
+        }
         cityAdapter.notifyDataSetChanged();
     }
     @Override
@@ -44,13 +48,8 @@ public class MainActivity extends AppCompatActivity implements
 
         cityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AddCityFragment cityFragment = AddCityFragment.newInstance(dataList.get(position));
-
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.edit_text_city_text, cityFragment)
-                        .replace(R.id.edit_text_province_text, cityFragment)
-                        .commit();
-
+                AddCityFragment addCityFragment = AddCityFragment.newInstance(dataList.get(position), position);
+                addCityFragment.show(getSupportFragmentManager(), "edit_city_dialog");
             }
         });
     }
